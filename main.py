@@ -52,7 +52,7 @@ def move(source, target, file_pattern):
 
 
 def main():
-    move(IMAGES_FOLDER, ORGANIZED_IMAGES_FOLDER, '.JPG')
+    move(IMAGES_FOLDER, ORGANIZED_IMAGES_FOLDER, '*.JPG')
 
 
 if __name__ == '__main__':
