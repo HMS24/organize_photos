@@ -77,6 +77,4 @@ ENV/
 *.DS_store
 
 # others
-*.JPG
-*.HEIC
-*.MOV
+assets/
