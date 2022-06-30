@@ -9,8 +9,8 @@ from mapping import DUPLICATE
 parser = ConfigParser()
 parser.read('config.conf')
 
-IMAGES_FOLDER = parser.get('folder_path', 'images')
-ORGANIZED_IMAGES_FOLDER = parser.get('folder_path', 'organized_images')
+PHOTOS_FOLDER = parser.get('folder_path', 'photos')
+ORGANIZED_PHOTOS_FOLDER = parser.get('folder_path', 'organized_photos')
 ARCHIVE_FOLDER = parser.get('folder_path', 'archive')
 
 
@@ -52,7 +52,7 @@ def move(source, target, file_pattern):
 
 
 def main():
-    move(IMAGES_FOLDER, ORGANIZED_IMAGES_FOLDER, '*.JPG')
+    move(PHOTOS_FOLDER, ORGANIZED_PHOTOS_FOLDER, '*.JPG')
 
 
 if __name__ == '__main__':
