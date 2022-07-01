@@ -31,7 +31,7 @@ def generate_filename_extension_counter(folder):
     return counter
 
 
-def rename(path, new_path):
+def _rename(path, new_path):
     """改名並移動檔案至新資料夾"""
 
     (year, month, day, *_) = get_split_datetime(path.stat().st_birthtime)
@@ -45,3 +45,13 @@ def rename(path, new_path):
         new_path = folder.joinpath(f'{path.stem}_{DUPLICATE}{path.suffix}')
 
     path.rename(new_path)
+
+def move_by_file_pattern(source, target, file_pattern):
+    """移動特定檔案"""
+
+    source_path = Path(source)
+    target_path = Path(target)
+    paths = source_path.glob(file_pattern)
+
+    for path in paths:
+        _rename(path, target_path)
