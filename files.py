@@ -33,7 +33,7 @@ def generate_filename_extension_counter(folder):
 
 def rename(path, new_path):
     """改名並移動檔案至新資料夾"""
-    
+
     (year, month, day, *_) = get_split_datetime(path.stat().st_birthtime)
 
     folder = new_path.joinpath(year, f'{month}-{day}')
