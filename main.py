@@ -14,7 +14,7 @@ ORGANIZED_PHOTOS_FOLDER = parser.get('folder_path', 'organized_photos')
 ARCHIVE_FOLDER = parser.get('folder_path', 'archive')
 
 
-def generate_file_extension_counter_from(dir):
+def generate_file_extension_counter_from(folder):
     """副檔名計數"""
 
     counter = Counter()
@@ -24,13 +24,11 @@ def generate_file_extension_counter_from(dir):
         suffix = path.suffix or path.stem
         counter[suffix] = counter.get(suffix, 0) + 1
 
-    walk_directory_tree(dir, counting)
+    walk_directory_tree(folder, counting)
     return counter
 
 
 def move(source, target, file_pattern):
-    """"""
-
     source_path = Path(source)
     target_path = Path(target)
     paths = source_path.glob(file_pattern)
