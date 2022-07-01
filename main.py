@@ -1,9 +1,7 @@
 from pathlib import Path
 from datetime import datetime
-from collections import Counter
 from configparser import ConfigParser
 
-from utils import walk_directory_tree
 from mapping import DUPLICATE
 
 parser = ConfigParser()
@@ -12,20 +10,6 @@ parser.read('config.conf')
 PHOTOS_FOLDER = parser.get('folder_path', 'photos')
 ORGANIZED_PHOTOS_FOLDER = parser.get('folder_path', 'organized_photos')
 ARCHIVE_FOLDER = parser.get('folder_path', 'archive')
-
-
-def generate_file_extension_counter_from(folder):
-    """副檔名計數"""
-
-    counter = Counter()
-
-    def counting(path):
-        # 可能會有隱藏檔
-        suffix = path.suffix or path.stem
-        counter[suffix] = counter.get(suffix, 0) + 1
-
-    walk_directory_tree(folder, counting)
-    return counter
 
 
 def move(source, target, file_pattern):
