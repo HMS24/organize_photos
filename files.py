@@ -1,8 +1,10 @@
 from collections import Counter
 from pathlib import Path
 
+from utils import get_split_datetime
+from mapping import DUPLICATE
 
-# 將計數邏輯獨立抽出為 callback
+
 def _walk_directory_tree(top, callback):
     """遞迴走訪資料夾"""
 
@@ -27,3 +29,19 @@ def generate_filename_extension_counter(folder):
 
     _walk_directory_tree(folder, counting)
     return counter
+
+
+def rename(path, new_path):
+    """改名並移動檔案至新資料夾"""
+    
+    (year, month, day, *_) = get_split_datetime(path.stat().st_birthtime)
+
+    folder = new_path.joinpath(year, f'{month}-{day}')
+    folder.mkdir(parents=True, exist_ok=True)
+
+    new_path = folder.joinpath(f'{path.stem}{path.suffix}')
+
+    if new_path.exists():
+        new_path = folder.joinpath(f'{path.stem}_{DUPLICATE}{path.suffix}')
+
+    path.rename(new_path)
