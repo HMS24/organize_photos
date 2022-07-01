@@ -1,8 +1,8 @@
 from pathlib import Path
-from datetime import datetime
 from configparser import ConfigParser
 
 from mapping import DUPLICATE
+from utils import get_split_datetime
 
 parser = ConfigParser()
 parser.read('config.conf')
@@ -18,11 +18,9 @@ def move(source, target, file_pattern):
     paths = source_path.glob(file_pattern)
 
     for path in paths:
-        last_mod_datetime = datetime.fromtimestamp(path.stat().st_birthtime)
-        last_mod_year_str = str(last_mod_datetime.year)
-        last_mod_date_str = last_mod_datetime.strftime('%m-%d')
+        (year, month, day, *_) = get_split_datetime(path.stat().st_birthtime)
 
-        folder = target_path.joinpath(last_mod_year_str, last_mod_date_str)
+        folder = target_path.joinpath(year, f'{month}-{day}')
         folder.mkdir(parents=True, exist_ok=True)
 
         new_path = folder.joinpath(f'{path.stem}{path.suffix}')
