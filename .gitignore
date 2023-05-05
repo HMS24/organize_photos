@@ -78,3 +78,4 @@ ENV/
 
 # others
 assets/
+config.ini

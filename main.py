@@ -2,67 +2,62 @@ import uuid
 
 from pathlib import Path
 from datetime import datetime
-from collections import Counter
+from collections import defaultdict
+from configparser import ConfigParser
 
-def seperate_date_time(timestamp):
-    try:
-        dt = datetime.fromtimestamp(timestamp)
-    except ValueError:
-        print('incorrect timestamp')
+config = ConfigParser()
+config.read('config.ini')
 
-        return None
+def count_extensions(path):
+    counter = defaultdict(int)
 
-    return dt.strftime('%Y %m %d %H %M %S').split()
-
-
-def count_extensions(folder):
-    counter = Counter()
-
-    for path in Path(folder).rglob("*"):
-        if path.is_file():
-            suffix = path.suffix or path.name
-            counter[suffix] += 1
+    for file in path.rglob('*'):
+        if file.is_file():
+            counter[file.suffix] += 1
 
     return counter
+
 
 def do_counters_have_same_elements(counter1, counter2):
     all_keys = set(counter1.keys()) | set(counter2.keys())
 
     return all(counter1.get(key, 0) == counter2.get(key, 0) for key in all_keys)
 
-def main():
-    source_path = Path('../Downloads/1_photos')
-    source_counter = count_extensions(source_path)
 
-    mov_files = source_path.glob('*.[mM][oO][vV]')
-    jpg_files = source_path.glob('*.[jJ][pP][gG]')
-    png_files = source_path.glob('*.[pP][nN][gG]')
+def organize_photos(source_path, target_path):
+    for path in source_path.rglob('*'):
+        if path.is_dir():
+            continue
 
-    files = list(mov_files) + list(jpg_files) + list(png_files)
-
-    target_path = Path('../Downloads/1_photos_organized')
-
-    for file in files:
-        year, month, *_ = seperate_date_time(file.stat().st_birthtime)
+        birthtime = datetime.fromtimestamp(path.stat().st_birthtime)
+        year, month = birthtime.year, birthtime.month
 
         target_folder = target_path / str(year) / str(month)
         target_folder.mkdir(parents=True, exist_ok=True)
 
-        new_file = target_folder / file.name
+        new_path = target_folder / path.name
 
-        if new_file.exists():
-            new_file = target_folder / f'{file.stem}_{uuid.uuid4()}{file.suffix}'
+        if new_path.exists():
+            new_path = target_folder / f'{path.stem}_{uuid.uuid4()}{path.suffix}'
 
-        file.rename(new_file)
+        path.rename(new_path)
 
-        # print(f'{file} -> {new_file}')
+
+def main():
+    source_path = Path(config['path']['source_path'])
+    target_path = Path(config['path']['target_path'])
+
+    source_counter = count_extensions(source_path)
+
+    organize_photos(source_path, target_path)
 
     target_counter = count_extensions(target_path)
 
     if do_counters_have_same_elements(source_counter, target_counter):
-        print('Organized successfully', sum(source_counter.values()), sum(target_counter.values()))
+        print('Photos organized successfully', sum(source_counter.values()), sum(target_counter.values()))
     else:
-        print('Organized UNsuccessfully', sum(source_counter.values()), sum(target_counter.values()))
+        print('Photos organized unsuccessfully', sum(source_counter.values()), sum(target_counter.values()))
+
 
 if __name__ == '__main__':
     main()
