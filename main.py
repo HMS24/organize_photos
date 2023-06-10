@@ -47,16 +47,16 @@ def main():
     source_path = Path(config['path']['source_path'])
     target_path = Path(config['path']['target_path'])
 
-    source_counter = count_extensions(source_path)
+    source_file_extensions_counter = count_extensions(source_path)
 
     organize_photos(source_path, target_path)
 
-    target_counter = count_extensions(target_path)
+    target_file_extensions_counter = count_extensions(target_path)
 
-    if do_counters_have_same_elements(source_counter, target_counter):
-        print('Photos organized successfully', sum(source_counter.values()), sum(target_counter.values()))
+    if do_counters_have_same_elements(source_file_extensions_counter, target_file_extensions_counter):
+        print('Photos organized successfully', sum(source_file_extensions_counter.values()), sum(target_file_extensions_counter.values()))
     else:
-        print('Photos organized unsuccessfully', sum(source_counter.values()), sum(target_counter.values()))
+        print('Photos organized unsuccessfully', sum(source_file_extensions_counter.values()), sum(target_file_extensions_counter.values()))
 
 
 if __name__ == '__main__':
